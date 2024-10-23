@@ -1,3 +1,4 @@
 ﻿using LeetCode;
 
-_14_Longest_Common_Prefix.ExecutionTime();
+_26_Remove_Duplicates_from_Sorted_Array.RemoveDuplicates([]);
+//_26_Remove_Duplicates_from_Sorted_Array.RemoveDuplicates([1, 1, 2]);
