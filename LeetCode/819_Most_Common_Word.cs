@@ -4,17 +4,26 @@
     {
         public static string MostCommonWord(string paragraph, string[] banned)
         {
-            var para = banned.Select(a => paragraph.Replace(a, "")).First().ToLower();
-
-            for (int i = 0; i < para.Length; i++)
+            var words = paragraph.ToLower().Split(new char[] { ' ', '!', '?', ',', ';', '.', '\'' },StringSplitOptions.RemoveEmptyEntries);
+            var dic = new Dictionary<string, int>();
+            foreach (var word in words)
             {
-                if (char.IsPunctuation(para[i]))
+                if (banned.Contains(word))
                 {
-                   // para='j';
+                    continue;
+                }
+
+                if (!dic.ContainsKey(word))
+                {
+                    dic.TryAdd(word, 1);
+                }
+                else
+                {
+                    dic[word]++;
                 }
             }
 
-            return "";
+            return dic.MaxBy(x => x.Value).Key;
         }
     }
 }
