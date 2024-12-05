@@ -1,8 +1,8 @@
 ﻿using LeetCode;
 
 
-
-_3248_Snake_in_Matrix.FinalPositionOfSnake(2, ["RIGHT", "DOWN"]);
+TechJays_CountLetter.CountLetter();
+//_3248_Snake_in_Matrix.FinalPositionOfSnake(2, ["RIGHT", "DOWN"]);
 //_804_Unique_Morse_Code_Words.UniqueMorseRepresentations(["gin", "zen", "gig", "msg"]);
 //_2496_Maximum_Value_of_a_String_in_an_Array.MaximumValue(["alic3", "bob", "3", "4", "00000"]);
 //_2108_Find_First_Palindromic_String_in_the_Array.FirstPalindrome(["abc", "car", "ada", "racecar", "cool"]);
