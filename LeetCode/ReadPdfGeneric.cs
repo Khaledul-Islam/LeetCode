@@ -2,7 +2,6 @@
 using Aspose.Pdf.Text;
 using System.Collections.Concurrent;
 using System.Text;
-using static Aspose.Pdf.Artifacts.Pagination.PageNumber;
 
 namespace LeetCode
 {
@@ -11,27 +10,32 @@ namespace LeetCode
         public static char[] StartChars { get; set; } = [':', '.'];
         public static void ReadPdf()
         {
-            var hdrs = new List<(string startAnchor, string endAnchor)>()
+            var hdrs = new List<(string startAnchor, string endAnchor, string[] ignoreAnchors)>()
             {
-                ("Buyer Name", "PO Date"),
-                ("Supplier Name", "PO #"),
-                ("Supplier Details", "Delivery Date"),
-                ("PO Date", "Supplier Name"),
-                ("PO #", "Supplier Details"),
-                ("Delivery Date", "Delivery Mode"),
-                ("Delivery Mode", "Payment Mode"),
-                ("Payment Mode","Currency"),
-                ("Currency","Season"),
-                ("Season","SL#"),
+                //("Supplier Address","Currency",["E-Mail","Telephone/Telefax"])
+
+
+                ("Buyer Name", "PO Date",[]),
+                ("Supplier Name", "PO #",[]),
+                ("Supplier Details", "Delivery Date",[]),
+                ("PO Date", "Supplier Name",[]),
+                ("PO #", "Supplier Details",[]),
+                ("Delivery Date", "Delivery Mode",[]),
+                ("Delivery Mode", "Payment Mode",[]),
+                ("Payment Mode","Currency",[]),
+                ("Currency","Season",[]),
+                ("Season","SL#",[]),
 
 
             };
-            ExtractHeaderInformation("C:\\Users\\Administrator\\Downloads\\Documents\\2.pdf", hdrs, true);
-            //ExtractTables("C:\\Users\\Administrator\\Downloads\\Documents\\2.pdf");
+            //var filePath = "C:\\Users\\aebislamk\\Downloads\\Brandix\\Brandix\\Carhartt\\2507507_AMERICAN AND EFIRED BANGLADESH LTD-BCB86505_ Purchase Order_20241105_102623.PDF";
+            var filePath = "D:\\Project\\7Robots\\Robot5_PdfScrap\\PDF\\2.pdf";
+            ExtractHeaderInformation(filePath, hdrs, true);
+            //ExtractTables(filePath);
         }
-        public static Dictionary<string, string> ExtractHeaderInformation(string pdfPath, List<(string startAnchor, string endAnchor)> anchors, bool isHeaderInFirstPage)
+        public static Dictionary<string, string> ExtractHeaderInformation(string pdfPath, List<(string startAnchor, string endAnchor, string[] ignoreAnchors)> anchors, bool isHeaderInFirstPage)
         {
-            Document pdfDocument = new Document(pdfPath);
+            var pdfDocument = new Document(pdfPath);
             var textBuilder = new StringBuilder();
             var headerData = new ConcurrentDictionary<string, string>();
 
@@ -39,7 +43,7 @@ namespace LeetCode
             {
                 Parallel.ForEach(pdfDocument.Pages, page =>
                 {
-                    TextAbsorber textAbsorber = new TextAbsorber
+                    var textAbsorber = new TextAbsorber
                     {
                         TextSearchOptions = new TextSearchOptions(true)
                     };
@@ -52,7 +56,7 @@ namespace LeetCode
             }
             else
             {
-                TextAbsorber textAbsorber = new TextAbsorber
+                var textAbsorber = new TextAbsorber
                 {
                     TextSearchOptions = new TextSearchOptions(true)
                 };
@@ -61,17 +65,32 @@ namespace LeetCode
             }
 
             var formattedText = textBuilder.ToString().ToUpper(System.Globalization.CultureInfo.InvariantCulture);
+
             Parallel.ForEach(anchors, (anchor) =>
             {
-                int startIndex = formattedText.IndexOf(anchor.startAnchor.ToUpper(System.Globalization.CultureInfo.InvariantCulture));
-                int endIndex = formattedText.IndexOf(anchor.endAnchor.ToUpper(System.Globalization.CultureInfo.InvariantCulture), startIndex + anchor.startAnchor.Length);
+                var startIndex = formattedText.IndexOf(anchor.startAnchor.ToUpper(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal);
+                var endIndex = formattedText.IndexOf(anchor.endAnchor.ToUpper(System.Globalization.CultureInfo.InvariantCulture), startIndex + anchor.startAnchor.Length, StringComparison.Ordinal);
 
                 if (startIndex != -1 && endIndex != -1)
                 {
-                    int dataStart = startIndex + anchor.startAnchor.Length;
-                    string parsedData = formattedText.Substring(dataStart, endIndex - dataStart).Trim();
-                    var dataBuilder = new StringBuilder(parsedData);
-                    for (int i = 0; i < dataBuilder.Length; i++)
+                    var dataStart = startIndex + anchor.startAnchor.Length;
+                    var extractedData = formattedText.Substring(dataStart, endIndex - dataStart).Trim();
+                    var dataBuilder = new StringBuilder(extractedData);
+                    foreach (var ignoreAnchor in anchor.ignoreAnchors)
+                    {
+                        var ignoreIndex = dataBuilder.ToString().IndexOf(ignoreAnchor.ToUpper(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal);
+                        while (ignoreIndex != -1)
+                        {
+                            var endOfIgnore = dataBuilder.ToString().IndexOf("\n", ignoreIndex, StringComparison.Ordinal);
+                            if (endOfIgnore == -1)
+                                endOfIgnore = dataBuilder.Length;
+
+                            dataBuilder.Remove(ignoreIndex, endOfIgnore - ignoreIndex);
+                            ignoreIndex = dataBuilder.ToString().IndexOf(ignoreAnchor.ToUpper(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal);
+                        }
+                    }
+
+                    for (var i = 0; i < dataBuilder.Length; i++)
                     {
                         if (dataBuilder.Length > 0 && char.IsWhiteSpace(dataBuilder[0]) || StartChars.Contains(dataBuilder[0]))
                         {
@@ -79,7 +98,8 @@ namespace LeetCode
                             i = -1;
                         }
                     }
-                    headerData[anchor.startAnchor] = dataBuilder.ToString();
+
+                    headerData[anchor.startAnchor] = dataBuilder.ToString().Trim();
                 }
             });
 
@@ -88,23 +108,23 @@ namespace LeetCode
 
         public static void ExtractTables(string pdfPath, bool hasSerialColumn = false, int serialStartsWith = 1)
         {
-            Document pdfDocument = new Document(pdfPath);
-            StringBuilder finalResult = new StringBuilder(); // To collect all the table data
+            var pdfDocument = new Document(pdfPath);
+            var finalResult = new StringBuilder(); // To collect all the table data
 
-            for (int pageIndex = 1; pageIndex <= pdfDocument.Pages.Count; pageIndex++)
+            for (var pageIndex = 1; pageIndex <= pdfDocument.Pages.Count; pageIndex++)
             {
-                Page page = pdfDocument.Pages[pageIndex];
-                TableAbsorber absorber = new TableAbsorber();
+                var page = pdfDocument.Pages[pageIndex];
+                var absorber = new TableAbsorber();
                 absorber.Visit(page);
-                foreach (AbsorbedTable table in absorber.TableList)
+                foreach (var table in absorber.TableList)
                 {
-                    foreach (AbsorbedRow row in table.RowList)
+                    foreach (var row in table.RowList)
                     {
-                        StringBuilder rowText = new StringBuilder();
-                        foreach (AbsorbedCell cell in row.CellList)
+                        var rowText = new StringBuilder();
+                        foreach (var cell in row.CellList)
                         {
                             var cellText = new StringBuilder();
-                            foreach (TextFragment fragment in cell.TextFragments)
+                            foreach (var fragment in cell.TextFragments)
                             {
                                 cellText.Append(fragment.Text);
                             }
@@ -115,8 +135,8 @@ namespace LeetCode
                 }
             }
             string[] lines = finalResult.ToString().Split('\n');
-            int lineNum = serialStartsWith;
-            foreach (string line in lines)
+            var lineNum = serialStartsWith;
+            foreach (var line in lines)
             {
                 if (line.StartsWith($"{lineNum} | "))
                 {
