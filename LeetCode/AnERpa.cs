@@ -1,11 +1,12 @@
 ﻿using Aspose.Pdf;
 using Aspose.Pdf.Text;
 using System.Collections.Concurrent;
+using System.Drawing.Drawing2D;
 using System.Text;
 
 namespace LeetCode
 {
-    public static class ReadPdfGeneric
+    public static class AnERpa
     {
         public static char[] StartChars { get; set; } = [':', '.'];
         public static void ReadPdf()
@@ -146,51 +147,28 @@ namespace LeetCode
             }
 
         }
+
+        public static Dictionary<string, string> ExtractEmailSubject(string emailSubject)
+        {
+            emailSubject = emailSubject.Trim();
+            int colonIndex = emailSubject.IndexOf(':');
+            if (colonIndex == -1)
+                return new Dictionary<string, string>();
+            string details = emailSubject.Substring(colonIndex + 1).Trim();
+            var data = details.Split('/');
+            int length = data.Length;
+            var result = new Dictionary<string, string>(length);
+            if (length > 0)
+                result["CompanyName"] = data[0].Trim();
+            if (length > 1)
+                result["MerchantName"] = data[1].Trim();
+            if (length > 2)
+                result["Email"] = data[2].Trim();
+            if (length > 3)
+                result["BuyerCode"] = data[3].Trim();
+            return result;
+        }
+
+
     }
 }
-//public static DataTable ExtractTableData(string pdfPath, List<string> tableHeaders)
-//{
-//    var dataTable = new DataTable();
-//    foreach (var header in tableHeaders)
-//    {
-//        dataTable.Columns.Add(header); // Create columns for the headers
-//    }
-
-//    using (var pdfReader = new PdfReader(pdfPath))
-//    using (var pdfDoc = new PdfDocument(pdfReader))
-//    {
-//        for (int i = 1; i <= pdfDoc.GetNumberOfPages(); i++)
-//        {
-//            string pageText = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i));
-//            string[] lines = pageText.Split('\n'); // Split text by line
-//            bool tableStarted = false;
-
-//            foreach (string line in lines)
-//            {
-//                // Check if the line contains table headers
-//                if (tableHeaders.TrueForAll(header => line.Contains(header)))
-//                {
-//                    tableStarted = true;
-//                    continue;
-//                }
-
-//                if (tableStarted)
-//                {
-//                    // Split the line by spaces (or tabs) to extract columns
-//                    string[] cells = line.Split(' '); // Use regex if cells are irregularly spaced
-//                    if (cells.Length >= tableHeaders.Count)
-//                    {
-//                        var row = dataTable.NewRow();
-//                        for (int j = 0; j < tableHeaders.Count; j++)
-//                        {
-//                            row[j] = cells[j].Trim(); // Assign each cell to the respective column
-//                        }
-//                        dataTable.Rows.Add(row);
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-//    return dataTable;
-//}

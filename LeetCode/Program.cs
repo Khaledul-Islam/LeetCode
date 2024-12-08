@@ -1,9 +1,11 @@
 ﻿using LeetCode;
 
 
-
-
-ReadPdfGeneric.ReadPdf();
+AnERpa.ExtractEmailSubject("order:companyName/merchantName/merchant@gmail.com/buyerCode");
+AnERpa.ExtractEmailSubject("order:companyName/merchantName/merchant@gmail.com");
+AnERpa.ExtractEmailSubject("order:companyName/merchantName");
+AnERpa.ExtractEmailSubject("order:companyName");
+AnERpa.ExtractEmailSubject("order");
 //_205_Isomorphic_Strings.IsIsomorphic("foo", "bar");
 //_283_Move_Zeroes.MoveZeroes([0, 1, 0, 3, 12]);
 //TechjaysPairStringSumNearZero.PairStringSumNearZero([-8, 5, 2, -6]);
