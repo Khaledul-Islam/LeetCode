@@ -1,8 +1,11 @@
 ﻿using LeetCode;
 
-
-
-_3248_Snake_in_Matrix.FinalPositionOfSnake(2, ["RIGHT", "DOWN"]);
+_205_Isomorphic_Strings.IsIsomorphic("foo", "bar");
+//_283_Move_Zeroes.MoveZeroes([0, 1, 0, 3, 12]);
+//TechjaysPairStringSumNearZero.PairStringSumNearZero([-8, 5, 2, -6]);
+//_1002_Find_Common_Characters.CommonChars(["bella", "label", "roller"]);
+//Example.encrypass("74u8oShuvo$");
+//_3248_Snake_in_Matrix.FinalPositionOfSnake(2, ["RIGHT", "DOWN"]);
 //_804_Unique_Morse_Code_Words.UniqueMorseRepresentations(["gin", "zen", "gig", "msg"]);
 //_2496_Maximum_Value_of_a_String_in_an_Array.MaximumValue(["alic3", "bob", "3", "4", "00000"]);
 //_2108_Find_First_Palindromic_String_in_the_Array.FirstPalindrome(["abc", "car", "ada", "racecar", "cool"]);
