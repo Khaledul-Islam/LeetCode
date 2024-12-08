@@ -1,7 +1,9 @@
 ﻿using LeetCode;
 
 
-TechJays_Move_Zeros.MoveZeros();
+
+ReadPdfGeneric.ReadPdf();
+//TechJays_Move_Zeros.MoveZeros();
 //TechJays_CountLetter.CountLetter();
 //_3248_Snake_in_Matrix.FinalPositionOfSnake(2, ["RIGHT", "DOWN"]);
 //_804_Unique_Morse_Code_Words.UniqueMorseRepresentations(["gin", "zen", "gig", "msg"]);
