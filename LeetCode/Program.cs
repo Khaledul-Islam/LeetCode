@@ -1,7 +1,7 @@
 ﻿using LeetCode;
 
 
-AnERpa.ReadPdf();
+MinMax.FindMinMax_2([1,2,3,4,5,6,7,8,9,10]);
 //_205_Isomorphic_Strings.IsIsomorphic("foo", "bar");
 //_283_Move_Zeroes.MoveZeroes([0, 1, 0, 3, 12]);
 //TechjaysPairStringSumNearZero.PairStringSumNearZero([-8, 5, 2, -6]);
